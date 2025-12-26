@@ -16,7 +16,7 @@ jobs:
           pip install pdoc
           pip install -r requirements.txt
       - name: Generate HTML
-        run: pdoc --html --output-dir docs models/ optimizer/ utils/
+        run: pdoc --o docs models/ optimizer/ utils/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

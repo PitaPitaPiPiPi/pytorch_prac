@@ -18,7 +18,7 @@ jobs:
       - name: Run training and check accuracy
         run: |
           # 1エポックだけ学習を実行し、ログをファイルに保存
-          python main.py --epochs 1 --batch_size 256 > output.txt
+          python main.py --lr 0.05 --epochs 1 --batch_size 128 > output.txt
           cat output.txt
           
           # 最終エポックの精度 (Accuracy: XX.XX%) を抽出

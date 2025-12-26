@@ -1,0 +1,31 @@
+name: Model Performance Check
+on: [push]
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+          
+      - name: Install dependencies
+        run: pip install torch torchvision tqdm
+        
+      - name: Run training and check accuracy
+        run: |
+          # 1エポックだけ学習を実行し、ログをファイルに保存
+          python main.py --epochs 1 --batch_size 256 > output.txt
+          cat output.txt
+          
+          # 最終エポックの精度 (Accuracy: XX.XX%) を抽出
+          # 注意: main.py の logger.log 出力形式に依存します
+          ACC=$(grep -oP 'Accuracy: \K[0-9.]+' output.txt | tail -1)
+          echo "Checked Accuracy: $ACC%"
+          
+          # 閾値（例: 80%）を下回る場合はエラー（終了コード1）を出す
+          # これによりGitHub Actionsが「失敗（赤色のX）」になります
+          python -c "assert float('$ACC') > 80.0, 'Accuracy too low: $ACC%'"
